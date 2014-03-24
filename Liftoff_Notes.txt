@@ -1,0 +1,52 @@
+Shuttle Weight: 4.5 x 10^6 lbs (2.05 x 10^6 kgs)
+
+Orbit Height: 115-400 mi (185-643 km)
+
+Solid Rocket Boosters
+	2 per shuttle
+	71% of thrust
+
+Main Engines
+	3 per shuttle
+	29% of thrust
+	6700 lbs (3039 kgs) each
+	375000-470000 lbs (1668083-2090664 N) of thrust maximum
+		rate can be adjusted from 65-109% max thrust
+	capable of controlling forward direction of rocket (mounted on gimbals)
+
+External Fuel Tank
+	78k lbs (35455 kg) empty
+	holds 1.6 x 10^6 lbs (719k kg) of propellant
+		526k gallons (2M l)
+
+Orbital Maneuvering System
+	two engines
+	6K lbs (26400 N) of thrust per engine
+	acceleration: 2 ft/s^2 (0.6 m/s^2) together
+		can change velocity by up to 1K ft/s (305 m/s)
+			to orbit (or de-orbit) takes 100-500 ft/s (31-153 m/s) change in velocity
+			orbital adjustments take approx. 2 ft/s (0.61 m/s) velocity change
+	can start & stop 1000 times
+	15 hrs. of burn time
+
+Reaction Control System
+	14 jets
+
+Launch Procedure
+	T minus 31 s - the on-board computers take over the launch sequence.
+	T minus 6.6 s - the shuttle's main engines ignite one at a time (0.12 s apart). The engines build up to more than 90 percent of their maximum thrust.
+	T minus 3 s - shuttle main engines are in lift-off position.
+	T minus 0 s -the SRBs are ignited and the shuttle lifts off the pad.
+	T plus 20 s - the shuttle rolls right (180 degree roll, 78 degree pitch).
+	T plus 60 s - shuttle engines are at maximum throttle.
+	T plus 2 min - SRBs separate from the orbiter and fuel tank at an altitude of 28 miles (45 km). Main engines continue firing. Parachutes deploy from the SRBs. SRBs will land in the ocean about 140 miles (225 km) off the coast of Florida. Ships will recover the SRBs and tow them back to Cape Canaveral for processing and re-use.
+	T plus 7.7 min - main engines throttled down to keep acceleration below 3g's so that the shuttle does not break apart.
+	T plus 8.5 min - main engines shut down.
+	T plus 9 min - ET separates from the orbiter. The ET will burn up upon re-entry.
+	T plus 10.5 min - OMS engines fire to place you in a low orbit.
+	T plus 45 min - OMS engines fire again to place you in a higher, circular orbit (about 250 miles/400 km).
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Freudenrich, Ph.D., Craig.  "How Space Shuttles Work"  19 January 2001.  HowStuffWorks.com. <http://science.howstuffworks.com/space-shuttle.htm>  16 March 2014.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
