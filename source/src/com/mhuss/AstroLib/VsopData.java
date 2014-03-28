@@ -6,22 +6,22 @@ package com.mhuss.AstroLib;
 
 // One VSOP term
 
-class VsopSet {
+/*class VsopSet {
   VsopSet( double a, double b, double c ) { A=a; B=b; C=c; }
   double A;
   double B;
   double C;
-};
+};*/
 
 // A set of VSOP terms
 
-class VsopTerms {
+/*class VsopTerms {
   int rows;          // number of term sets
   VsopSet pTerms[];  // pointer to start of data
 
   VsopTerms() { rows=0; }
   VsopTerms( int r, VsopSet p[] ) { rows=r; pTerms=p; }
-};
+};*/
 
 /**
  * All the static VSOP data, in a separate file for managability.

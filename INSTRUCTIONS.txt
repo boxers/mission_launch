@@ -1,0 +1,23 @@
+Team Rocket: Durell Plunkett and Son Pham
+CSC 2700
+Spring 2014
+
+
+Instructions
+
+
+Requirements:
+
+This program requires Java 1.7 and up in order to compile and run.
+
+
+To Compile:
+
+1. Open command prompt.
+2. Go to the directory source/
+3. Enter the command: javac -d classes -classpath classes/AbsoluteLayout.jar -sourcepath src src/missionlaunch/*.java
+
+To Run:
+
+1. Go to the directory source/classes/
+2. Enter the command: java -classpath .;AbsoluteLayout.jar missionlaunch.MissionLaunch
