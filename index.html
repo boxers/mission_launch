@@ -37,6 +37,15 @@
       <section id="main_content">
 		<h1>News/Updates</h1>
 		<div class="block_item">
+			<h2 style="line-height: 1em">March 27, 2014</h2>
+			<p style="color: #FFFFFF">Fixed a major bug that caused planets to skip portions of their orbits. Fixed
+				error in calculating Earth planetary position. Added a few things to the UI and functionality to the
+				selection of a launch date. The orbit simulation has been put into a separate class called OrbitSimulation.
+				To use it, change line 6 of MissionLaunch.java from: <p style="color: #b5e853">MissionVisual missionVisual = new MissionVisual(visualViewPort);</p>
+				to: <p style="color: #b5e853">OrbitSimulation missionVisual = new OrbitSimulation(visualViewPort);</p>
+			</p>
+	    </div>
+		<div class="block_item">
 			<h2 style="line-height: 1em">March 26, 2014</h2>
 			<p style="color: #FFFFFF">A screen shot from our prototype showing a simulation of planet orbits
 				using <a href="http://mhuss.com/AstroLib/">AstroLib</a> to get planetary positions. The sun and planets are not to scale
