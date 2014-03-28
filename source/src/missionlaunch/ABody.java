@@ -26,12 +26,16 @@ public class ABody {
             double dist = planetData.getPolarRadius();
             double lon = planetData.getPolarLon();
             double degrees = Math.toDegrees(lon);
+            if(planet == Planets.EARTH){
+                degrees -= 180;
+                //System.out.println(degrees);
+            }
             double rad = dist*PlanetData.AU;
             hlongitude = degrees;
             hdistance = rad;
             rad = rad/px;
             Arc2D.Double arc = new Arc2D.Double(cx-rad,cy-rad,
-                    rad*2,rad*2,90,degrees, Arc2D.PIE);
+                    rad*2,rad*2,0,degrees, Arc2D.PIE);
             Point2D endpoint = arc.getEndPoint();
             x = endpoint.getX();
             y = endpoint.getY();

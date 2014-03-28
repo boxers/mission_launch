@@ -3,20 +3,67 @@
  * and open the template in the editor.
  */
 package missionlaunch;
+import java.util.GregorianCalendar;
 
-/**
- *
- * @author L
- */
 public class MissionLaunch extends javax.swing.JFrame {
     VisualViewPort visualViewPort = new VisualViewPort();
+    MissionVisual missionVisual = new MissionVisual(visualViewPort);
+    GregorianCalendar date = new GregorianCalendar();
     /**
      * Creates new form MissionLaunch
      */
     public MissionLaunch() {
         initComponents();
+        postInit();
     }
-
+    
+    private void postInit(){
+        int month = date.get(GregorianCalendar.MONTH);
+        int year = date.get(GregorianCalendar.YEAR);
+        int day = date.get(GregorianCalendar.DAY_OF_MONTH);
+        launchMonthCBox.setSelectedIndex(month);
+        launchYearCBox.setSelectedItem(""+year);
+        launchDayCBox.setSelectedItem(""+day);
+        int m = arrivalMonthCBox.getSelectedIndex();
+        String y = (String)arrivalYearCBox.getSelectedItem();
+        updateArrivalDays(m,Integer.parseInt(y));
+    }
+    
+    public void updateLaunchDays(int m, int y){
+        GregorianCalendar temp = new GregorianCalendar(y,m,1);
+        int daysInMonth = temp.getActualMaximum(GregorianCalendar.DAY_OF_MONTH);
+        String[] days = new String[daysInMonth];
+        for(int i = 0; i < days.length; i++){
+            days[i] = ""+(i+1);
+        }
+        String day = (String)launchDayCBox.getSelectedItem();
+        launchDayCBox.setModel(new javax.swing.DefaultComboBoxModel(days));
+        if(Integer.parseInt(day) > days.length){
+            day = ""+1;
+        }
+        launchDayCBox.setSelectedItem(day);
+        updatePlanetPositions(new GregorianCalendar(y,m,Integer.parseInt(day)));
+    }
+    
+    public void updateArrivalDays(int m, int y){
+        GregorianCalendar temp = new GregorianCalendar(y,m,1);
+        int daysInMonth = temp.getActualMaximum(GregorianCalendar.DAY_OF_MONTH);
+        String[] days = new String[daysInMonth];
+        for(int i = 0; i < days.length; i++){
+            days[i] = ""+(i+1);
+        }
+        String day = (String)arrivalDayCBox.getSelectedItem();
+        arrivalDayCBox.setModel(new javax.swing.DefaultComboBoxModel(days));
+        if(Integer.parseInt(day) > days.length){
+            day = ""+1;
+        }
+        arrivalDayCBox.setSelectedItem(day);
+    }
+    
+    public void updatePlanetPositions(GregorianCalendar d){
+        missionVisual.calculatePlanetPositions(d);
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -27,17 +74,39 @@ public class MissionLaunch extends javax.swing.JFrame {
     private void initComponents() {
 
         visualScroller = new javax.swing.JScrollPane();
-        visualPanel = new MissionVisual(visualViewPort);
+        visualPanel = missionVisual;
+        launchDatePanel = new javax.swing.JPanel();
+        launchDayLabel = new javax.swing.JLabel();
+        launchDayCBox = new javax.swing.JComboBox();
+        launchMonthLabel = new javax.swing.JLabel();
+        launchMonthCBox = new javax.swing.JComboBox();
+        launchYearCBox = new javax.swing.JComboBox();
+        jLabel1 = new javax.swing.JLabel();
+        flightPathPanel = new javax.swing.JPanel();
+        originLabel = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        originCBox = new javax.swing.JComboBox();
+        destinationCBox = new javax.swing.JComboBox();
+        launchButton = new javax.swing.JButton();
+        arrivalDateLabel = new javax.swing.JPanel();
+        arrivalMonthLabel = new javax.swing.JLabel();
+        arrivalMonthCBox = new javax.swing.JComboBox();
+        arrivalDayCBox = new javax.swing.JComboBox();
+        arrivalYearCBox = new javax.swing.JComboBox();
+        arrivalDayLabel = new javax.swing.JLabel();
+        arrivalYearLabel = new javax.swing.JLabel();
+        resultsScroller = new javax.swing.JScrollPane();
+        resultsTextArea = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1200, 600));
-        setPreferredSize(new java.awt.Dimension(1200, 600));
+        setPreferredSize(new java.awt.Dimension(1300, 600));
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         visualScroller.setViewport(visualViewPort);
-        visualScroller.setMinimumSize(new java.awt.Dimension(1190, 560));
-        visualScroller.setPreferredSize(new java.awt.Dimension(1000, 560));
+        visualScroller.setMinimumSize(new java.awt.Dimension(900, 560));
+        visualScroller.setPreferredSize(new java.awt.Dimension(900, 560));
 
         javax.swing.GroupLayout visualPanelLayout = new javax.swing.GroupLayout(visualPanel);
         visualPanel.setLayout(visualPanelLayout);
@@ -54,8 +123,153 @@ public class MissionLaunch extends javax.swing.JFrame {
 
         getContentPane().add(visualScroller, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
-        pack();
+        launchDatePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Launch Date", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12))); // NOI18N
+        launchDatePanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        launchDayLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        launchDayLabel.setText(" Day");
+        launchDatePanel.add(launchDayLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 40, 30, 20));
+
+        launchDayCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1" }));
+        launchDayCBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                launchDayCBoxItemStateChanged(evt);
+            }
+        });
+        launchDatePanel.add(launchDayCBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 40, -1, -1));
+
+        launchMonthLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        launchMonthLabel.setText("Month");
+        launchDatePanel.add(launchMonthLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, -1, 20));
+
+        launchMonthCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "January",
+            "February","March","April","May","June","July","August","September","October",
+            "November","December"}));
+launchMonthCBox.addItemListener(new java.awt.event.ItemListener() {
+    public void itemStateChanged(java.awt.event.ItemEvent evt) {
+        launchMonthCBoxItemStateChanged(evt);
+    }
+    });
+    launchDatePanel.add(launchMonthCBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 40, -1, -1));
+
+    launchYearCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "2013","2014","2015","2016","2017","2018","2019","2020" }));
+    launchYearCBox.addItemListener(new java.awt.event.ItemListener() {
+        public void itemStateChanged(java.awt.event.ItemEvent evt) {
+            launchYearCBoxItemStateChanged(evt);
+        }
+    });
+    launchDatePanel.add(launchYearCBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 40, -1, -1));
+
+    jLabel1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+    jLabel1.setText("Year");
+    launchDatePanel.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 40, -1, 20));
+
+    getContentPane().add(launchDatePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 130, 390, 90));
+
+    flightPathPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Flight Path", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12))); // NOI18N
+    flightPathPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+    originLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+    originLabel.setText("Origin");
+    flightPathPanel.add(originLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 40, -1, 20));
+
+    jLabel2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+    jLabel2.setText("Destination");
+    flightPathPanel.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 40, -1, 20));
+
+    originCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Mercury",
+        "Venus", "Earth", "Mars" }));
+flightPathPanel.add(originCBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 40, 100, -1));
+
+destinationCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Mercury",
+"Venus", "Earth", "Mars" }));
+flightPathPanel.add(destinationCBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 40, 100, -1));
+
+getContentPane().add(flightPathPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 20, 390, 90));
+
+launchButton.setText("Launch");
+getContentPane().add(launchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(1220, 340, -1, -1));
+
+arrivalDateLabel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Arrival Date", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12))); // NOI18N
+arrivalDateLabel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+arrivalMonthLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+arrivalMonthLabel.setText("Month");
+arrivalDateLabel.add(arrivalMonthLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, -1, 20));
+
+arrivalMonthCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "January",
+    "February","March","April","May","June","July","August","September","October",
+    "November","December" }));
+    arrivalMonthCBox.addItemListener(new java.awt.event.ItemListener() {
+        public void itemStateChanged(java.awt.event.ItemEvent evt) {
+            arrivalMonthCBoxItemStateChanged(evt);
+        }
+    });
+    arrivalDateLabel.add(arrivalMonthCBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 40, -1, -1));
+
+    arrivalDayCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1" }));
+    arrivalDateLabel.add(arrivalDayCBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 40, -1, -1));
+
+    arrivalYearCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "2014","2015","2016","2017","2018","2019","2020" }));
+    arrivalYearCBox.addItemListener(new java.awt.event.ItemListener() {
+        public void itemStateChanged(java.awt.event.ItemEvent evt) {
+            arrivalYearCBoxItemStateChanged(evt);
+        }
+    });
+    arrivalDateLabel.add(arrivalYearCBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 40, -1, -1));
+
+    arrivalDayLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+    arrivalDayLabel.setText(" Day");
+    arrivalDateLabel.add(arrivalDayLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 40, 30, 20));
+
+    arrivalYearLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+    arrivalYearLabel.setText("Year");
+    arrivalDateLabel.add(arrivalYearLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 40, -1, 20));
+
+    getContentPane().add(arrivalDateLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 240, 390, 90));
+
+    resultsTextArea.setEditable(false);
+    resultsTextArea.setColumns(20);
+    resultsTextArea.setLineWrap(true);
+    resultsTextArea.setRows(5);
+    resultsTextArea.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Results", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12))); // NOI18N
+    resultsScroller.setViewportView(resultsTextArea);
+
+    getContentPane().add(resultsScroller, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 380, 380, 180));
+
+    pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void launchMonthCBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_launchMonthCBoxItemStateChanged
+        int m = launchMonthCBox.getSelectedIndex();
+        String y = (String)launchYearCBox.getSelectedItem();
+        updateLaunchDays(m,Integer.parseInt(y));
+    }//GEN-LAST:event_launchMonthCBoxItemStateChanged
+
+    private void launchDayCBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_launchDayCBoxItemStateChanged
+        int m = launchMonthCBox.getSelectedIndex();
+        String y = (String)launchYearCBox.getSelectedItem();
+        String d = (String)launchDayCBox.getSelectedItem();
+        updatePlanetPositions(new GregorianCalendar(Integer.parseInt(y),m,Integer.parseInt(d)));
+    }//GEN-LAST:event_launchDayCBoxItemStateChanged
+
+    private void launchYearCBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_launchYearCBoxItemStateChanged
+        int m = launchMonthCBox.getSelectedIndex();
+        String y = (String)launchYearCBox.getSelectedItem();
+        updateLaunchDays(m,Integer.parseInt(y));
+    }//GEN-LAST:event_launchYearCBoxItemStateChanged
+
+    private void arrivalMonthCBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_arrivalMonthCBoxItemStateChanged
+        int m = arrivalMonthCBox.getSelectedIndex();
+        String y = (String)arrivalYearCBox.getSelectedItem();
+        updateArrivalDays(m,Integer.parseInt(y));
+    }//GEN-LAST:event_arrivalMonthCBoxItemStateChanged
+
+    private void arrivalYearCBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_arrivalYearCBoxItemStateChanged
+        int m = arrivalMonthCBox.getSelectedIndex();
+        String y = (String)arrivalYearCBox.getSelectedItem();
+        updateArrivalDays(m,Integer.parseInt(y));
+    }//GEN-LAST:event_arrivalYearCBoxItemStateChanged
 
     /**
      * @param args the command line arguments
@@ -92,6 +306,28 @@ public class MissionLaunch extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel arrivalDateLabel;
+    private javax.swing.JComboBox arrivalDayCBox;
+    private javax.swing.JLabel arrivalDayLabel;
+    private javax.swing.JComboBox arrivalMonthCBox;
+    private javax.swing.JLabel arrivalMonthLabel;
+    private javax.swing.JComboBox arrivalYearCBox;
+    private javax.swing.JLabel arrivalYearLabel;
+    private javax.swing.JComboBox destinationCBox;
+    private javax.swing.JPanel flightPathPanel;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JButton launchButton;
+    private javax.swing.JPanel launchDatePanel;
+    private javax.swing.JComboBox launchDayCBox;
+    private javax.swing.JLabel launchDayLabel;
+    private javax.swing.JComboBox launchMonthCBox;
+    private javax.swing.JLabel launchMonthLabel;
+    private javax.swing.JComboBox launchYearCBox;
+    private javax.swing.JComboBox originCBox;
+    private javax.swing.JLabel originLabel;
+    private javax.swing.JScrollPane resultsScroller;
+    private javax.swing.JTextArea resultsTextArea;
     private javax.swing.JPanel visualPanel;
     private javax.swing.JScrollPane visualScroller;
     // End of variables declaration//GEN-END:variables

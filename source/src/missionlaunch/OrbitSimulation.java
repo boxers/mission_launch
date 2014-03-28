@@ -10,7 +10,7 @@ import java.util.GregorianCalendar;
 import java.util.Calendar;
 import javax.imageio.ImageIO;
 
-public class MissionVisual extends JPanel{
+public class OrbitSimulation extends JPanel{
     
     private final static int P_HEIGHT = 1024;
     private final static int P_WIDTH = 1280;
@@ -32,12 +32,14 @@ public class MissionVisual extends JPanel{
     Ellipse2D.Double mercuryShape = new Ellipse2D.Double(-50,-50,20,20);
     Ellipse2D.Double venusShape = new Ellipse2D.Double(-50,-50,50,50);
     Ellipse2D.Double marsShape = new Ellipse2D.Double(-50,-50,40,40);
-    
+    //Ellipse2D.Double testPlot = new Ellipse2D.Double(630,502+(69800000/px),20,20);
+    GregorianCalendar date = new GregorianCalendar();
+    Thread animator;
     ObsInfo observerInfo = new ObsInfo();
     
     VisualViewPort visualViewPort;
     
-    public MissionVisual(JViewport jvp){
+    public OrbitSimulation(JViewport jvp){
         Dimension size = new Dimension(P_WIDTH, P_HEIGHT);
         setBackground(Color.BLACK);
         setForeground(Color.RED);
@@ -47,10 +49,37 @@ public class MissionVisual extends JPanel{
         setMaximumSize(size);
         setLayout(null);
         visualViewPort = (VisualViewPort)jvp;
+        //board = new BufferedImage(1280, 1024, BufferedImage.TYPE_INT_ARGB);
+        //g2d = board.createGraphics();
+        //g2d.setColor(Color.WHITE);
         loadImage();
+        animate();
     }
     
-    public void calculatePlanetPositions(GregorianCalendar date){
+    public final void animate(){
+        animator = new Thread(){
+            public void run(){
+                //int count = 0;
+                while(true){
+                    try{
+                        Thread.sleep(1);
+                        date.add(GregorianCalendar.HOUR, 1);
+                        /*count++;
+                        if(count == 90000){
+                            drawOrbit();
+                            System.out.println("done");
+                        }*/
+                        calculatePlanetPositions(date);
+                        repaint();
+                    }
+                    catch(InterruptedException e){}
+                }
+            }
+        };
+        animator.start();
+    }
+    
+    public void calculatePlanetPositions(GregorianCalendar d){
         //int second = date.get(GregorianCalendar.SECOND);
         //int minute = date.get(GregorianCalendar.MINUTE);
         int hour = date.get(GregorianCalendar.HOUR_OF_DAY);
@@ -66,19 +95,19 @@ public class MissionVisual extends JPanel{
         mercuryShape.setFrame(mercury.getX()-mercuryShape.getWidth()/2,
                 mercury.getY()-mercuryShape.getHeight()/2, 
                 mercuryShape.getWidth(), mercuryShape.getHeight());
-        
+        //g2d.drawLine((int)mercury.getX(), (int)mercury.getY(), (int)mercury.getX(), (int)mercury.getY());
         venusShape.setFrame(venus.getX()-venusShape.getWidth()/2,
                 venus.getY()-venusShape.getHeight()/2, 
                 venusShape.getWidth(), venusShape.getHeight());
-        
+        //g2d.drawLine((int)venus.getX(), (int)venus.getY(), (int)venus.getX(), (int)venus.getY());
         earthShape.setFrame(earth.getX()-earthShape.getWidth()/2,
                 earth.getY()-earthShape.getHeight()/2, 
                 earthShape.getWidth(), earthShape.getHeight());
-        
+        //g2d.drawLine((int)earth.getX(), (int)earth.getY(), (int)earth.getX(), (int)earth.getY());
         marsShape.setFrame(mars.getX()-marsShape.getWidth()/2,
                 mars.getY()-marsShape.getHeight()/2, 
                 marsShape.getWidth(), marsShape.getHeight());
-        repaint();
+        //g2d.drawLine((int)mars.getX(), (int)mars.getY(), (int)mars.getX(), (int)mars.getY());
         visualViewPort.setDate(year+"-"+month+"-"+day);
     }
     
@@ -109,5 +138,14 @@ public class MissionVisual extends JPanel{
         g2.fill(earthShape);
         g2.setColor(Color.RED);
         g2.fill(marsShape);
+    }
+    
+    public void drawOrbit(){
+        try{
+            File outputfile = new File("images/board.png");
+            ImageIO.write(board, "png", outputfile);  
+        }
+        catch (IOException ex) {}  
+        finally{g2d.dispose();}
     }
 }
