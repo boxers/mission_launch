@@ -7,7 +7,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.GregorianCalendar;
-import java.util.Calendar;
 import javax.imageio.ImageIO;
 
 public class MissionVisual extends JPanel{
@@ -79,7 +78,7 @@ public class MissionVisual extends JPanel{
                 mars.getY()-marsShape.getHeight()/2, 
                 marsShape.getWidth(), marsShape.getHeight());
         repaint();
-        visualViewPort.setDate(year+"-"+month+"-"+day);
+        visualViewPort.setDate(year+"-"+month+"-"+day+" "+hour+":00 UT");
     }
     
     private void loadImage(){

@@ -7,7 +7,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.GregorianCalendar;
-import java.util.Calendar;
 import javax.imageio.ImageIO;
 
 public class OrbitSimulation extends JPanel{
@@ -108,7 +107,7 @@ public class OrbitSimulation extends JPanel{
                 mars.getY()-marsShape.getHeight()/2, 
                 marsShape.getWidth(), marsShape.getHeight());
         //g2d.drawLine((int)mars.getX(), (int)mars.getY(), (int)mars.getX(), (int)mars.getY());
-        visualViewPort.setDate(year+"-"+month+"-"+day);
+        visualViewPort.setDate(year+"-"+month+"-"+day+" "+hour+":00 UT");
     }
     
     private void loadImage(){

@@ -5,6 +5,26 @@ import java.awt.*;
 public class VisualViewPort extends JViewport {
     
     private String date = "test";
+    Thread animator;
+    
+    public VisualViewPort(){
+        animate();
+    }
+    
+    public final void animate(){
+        animator = new Thread(){
+            public void run(){
+                while(true){
+                    try{
+                        Thread.sleep(1);
+                        repaint();
+                    }
+                    catch(InterruptedException e){}
+                }
+            }
+        };
+        animator.start();
+    }
     
     @Override
     public void paint(Graphics g) {
@@ -16,6 +36,5 @@ public class VisualViewPort extends JViewport {
     
     public void setDate(String d){
         date = d;
-        repaint();
     }
 }
