@@ -7,25 +7,41 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.GregorianCalendar;
+import java.util.Calendar;
+import java.util.Locale;
 import javax.imageio.ImageIO;
 
 public class MissionVisual extends JPanel{
     
+    private final static int P_HEIGHT = 1024;
+    private final static int P_WIDTH = 1280;
+    private final static double LARGEST_APHELION = 249230000.0; 
+    double px = LARGEST_APHELION/(P_HEIGHT/2.0);
+    double centerX = P_WIDTH/2.0;
+    double centerY = P_HEIGHT/2.0;
     BufferedImage board;
     BufferedImage orbits;
     Graphics2D g2d;
-    Ellipse2D.Double sunShape = new Ellipse2D.Double(640,512,80,80);
+    
+    ABody mercury = new ABody(Planets.MERCURY, 4879, 0);
+    ABody venus = new ABody(Planets.VENUS, 12104, 0);
+    ABody earth = new ABody(Planets.EARTH, 12756, 0);
+    ABody mars = new ABody(Planets.MARS, 6792, 0);
+    
+    Ellipse2D.Double sunShape = new Ellipse2D.Double(600,472,80,80);
     Ellipse2D.Double earthShape = new Ellipse2D.Double(-50,-50,50,50);
     Ellipse2D.Double mercuryShape = new Ellipse2D.Double(-50,-50,20,20);
     Ellipse2D.Double venusShape = new Ellipse2D.Double(-50,-50,50,50);
     Ellipse2D.Double marsShape = new Ellipse2D.Double(-50,-50,40,40);
+    //Ellipse2D.Double testPlot = new Ellipse2D.Double(630,502+(69800000/px),20,20);
     GregorianCalendar date = new GregorianCalendar();
     Thread animator;
     ObsInfo observerInfo = new ObsInfo();
-    double px = 249230000/1024;
     
-    public MissionVisual(){
-        Dimension size = new Dimension(1280, 1024);
+    VisualViewPort visualViewPort;
+    
+    public MissionVisual(JViewport jvp){
+        Dimension size = new Dimension(P_WIDTH, P_HEIGHT);
         setBackground(Color.BLACK);
         setForeground(Color.RED);
         setSize(size);
@@ -33,6 +49,7 @@ public class MissionVisual extends JPanel{
         setMinimumSize(size);
         setMaximumSize(size);
         setLayout(null);
+        visualViewPort = (VisualViewPort)jvp;
         //board = new BufferedImage(1280, 1024, BufferedImage.TYPE_INT_ARGB);
         //g2d = board.createGraphics();
         //g2d.setColor(Color.WHITE);
@@ -43,16 +60,16 @@ public class MissionVisual extends JPanel{
     public final void animate(){
         animator = new Thread(){
             public void run(){
-                int count = 0;
+                //int count = 0;
                 while(true){
                     try{
                         Thread.sleep(10);
                         date.add(GregorianCalendar.DAY_OF_MONTH, 1);
-                        //count++;
-                        //if(count == 30000){
-                        //    drawOrbit();
-                        //    System.out.println("done");
-                        //}
+                        /*count++;
+                        if(count == 90000){
+                            drawOrbit();
+                            System.out.println("done");
+                        }*/
                         calculatePlanetPositions();
                         repaint();
                     }
@@ -64,66 +81,35 @@ public class MissionVisual extends JPanel{
     }
     
     private void calculatePlanetPositions(){
+        //int second = date.get(GregorianCalendar.SECOND);
+        //int minute = date.get(GregorianCalendar.MINUTE);
+        int hour = date.get(GregorianCalendar.HOUR_OF_DAY);
         int day = date.get(GregorianCalendar.DAY_OF_MONTH);
         int year = date.get(GregorianCalendar.YEAR);
         int month = date.get(GregorianCalendar.MONTH);
-        AstroDate jd = new AstroDate(day,month,year,0,0,0);
-        PlanetData earth = new PlanetData(Planets.EARTH, jd.jd(), observerInfo);
-        PlanetData mars = new PlanetData(Planets.MARS, jd.jd(), observerInfo);
-        PlanetData mercury = new PlanetData(Planets.MERCURY, jd.jd(), observerInfo);
-        PlanetData venus = new PlanetData(Planets.VENUS, jd.jd(), observerInfo);
-        double degrees;
-        double rad;
-        try{
-            double dist = earth.getPolarRadius();
-            double lon = earth.getPolarLon();
-            degrees = Math.toDegrees(lon);
-            rad = dist*PlanetData.AU;
-            rad = rad/px;
-            Arc2D.Double arc = new Arc2D.Double(sunShape.getX()-rad/2,sunShape.getY()-rad/2,
-                    rad,rad,0,degrees, Arc2D.PIE);
-            Point2D endpoint = arc.getEndPoint();
-            //System.out.println(date.toString());
-            //System.out.println("distance = "+rad);
-            //System.out.println("degrees = "+degrees);
-            //System.out.println(endpoint.getX()+", "+endpoint.getY());
-            earthShape.setFrame(endpoint.getX()-25, endpoint.getY()-25, 50, 50);
-            //g2d.drawLine((int)endpoint.getX(), (int)endpoint.getY(), (int)endpoint.getX(), (int)endpoint.getY());
-            
-            dist = mercury.getPolarRadius();
-            lon = mercury.getPolarLon();
-            degrees = Math.toDegrees(lon);
-            rad = dist*PlanetData.AU;
-            rad = rad/px;
-            arc = new Arc2D.Double(sunShape.getX()-rad/2,sunShape.getY()-rad/2,
-                    rad,rad,0,degrees, Arc2D.PIE);
-            endpoint = arc.getEndPoint();
-            mercuryShape.setFrame(endpoint.getX()-15, endpoint.getY()-15, 30, 30);
-            //g2d.drawLine((int)endpoint.getX(), (int)endpoint.getY(), (int)endpoint.getX(), (int)endpoint.getY());
-            
-            dist = venus.getPolarRadius();
-            lon = venus.getPolarLon();
-            degrees = Math.toDegrees(lon);
-            rad = dist*PlanetData.AU;
-            rad = rad/px;
-            arc = new Arc2D.Double(sunShape.getX()-rad/2,sunShape.getY()-rad/2,
-                    rad,rad,0,degrees, Arc2D.PIE);
-            endpoint = arc.getEndPoint();
-            venusShape.setFrame(endpoint.getX()-25, endpoint.getY()-25, 50, 50);
-            //g2d.drawLine((int)endpoint.getX(), (int)endpoint.getY(), (int)endpoint.getX(), (int)endpoint.getY());
-            
-            dist = mars.getPolarRadius();
-            lon = mars.getPolarLon();
-            degrees = Math.toDegrees(lon);
-            rad = dist*PlanetData.AU;
-            rad = rad/px;
-            arc = new Arc2D.Double(sunShape.getX()-rad/2,sunShape.getY()-rad/2,
-                    rad,rad,0,degrees, Arc2D.PIE);
-            endpoint = arc.getEndPoint();
-            marsShape.setFrame(endpoint.getX()-20, endpoint.getY()-20, 40, 40);
-            //g2d.drawLine((int)endpoint.getX(), (int)endpoint.getY(), (int)endpoint.getX(), (int)endpoint.getY());
-        }
-        catch(NoInitException noi){System.out.println("Error getting heliocentric coordinates.");}
+        AstroDate jd = new AstroDate(day,month,year,hour,0,0);
+        mercury.calculateCoordinates(jd, px, centerX, centerY);
+        venus.calculateCoordinates(jd, px, centerX, centerY);
+        earth.calculateCoordinates(jd, px, centerX, centerY);
+        mars.calculateCoordinates(jd, px, centerX, centerY);
+        
+        mercuryShape.setFrame(mercury.getX()-mercuryShape.getWidth()/2,
+                mercury.getY()-mercuryShape.getHeight()/2, 
+                mercuryShape.getWidth(), mercuryShape.getHeight());
+        //g2d.drawLine((int)mercury.getX(), (int)mercury.getY(), (int)mercury.getX(), (int)mercury.getY());
+        venusShape.setFrame(venus.getX()-venusShape.getWidth()/2,
+                venus.getY()-venusShape.getHeight()/2, 
+                venusShape.getWidth(), venusShape.getHeight());
+        //g2d.drawLine((int)venus.getX(), (int)venus.getY(), (int)venus.getX(), (int)venus.getY());
+        earthShape.setFrame(earth.getX()-earthShape.getWidth()/2,
+                earth.getY()-earthShape.getHeight()/2, 
+                earthShape.getWidth(), earthShape.getHeight());
+        //g2d.drawLine((int)earth.getX(), (int)earth.getY(), (int)earth.getX(), (int)earth.getY());
+        marsShape.setFrame(mars.getX()-marsShape.getWidth()/2,
+                mars.getY()-marsShape.getHeight()/2, 
+                marsShape.getWidth(), marsShape.getHeight());
+        //g2d.drawLine((int)mars.getX(), (int)mars.getY(), (int)mars.getX(), (int)mars.getY());
+        visualViewPort.setDate(date.get(Calendar.YEAR)+"-"+date.get(Calendar.MONTH)+"-"+date.get(Calendar.DAY_OF_MONTH));
     }
     
     private void loadImage(){
@@ -144,7 +130,7 @@ public class MissionVisual extends JPanel{
         g2.fillRect(0,0,getWidth(),getHeight());
         g2.drawImage(orbits,0,0,null);
         g2.setColor(Color.YELLOW);
-        g2.fill(new Ellipse2D.Double(sunShape.getX()-40,sunShape.getY()-40,80,80));
+        g2.fill(sunShape);
         g2.setColor(Color.GRAY);
         g2.fill(mercuryShape);
         g2.setColor(Color.PINK);

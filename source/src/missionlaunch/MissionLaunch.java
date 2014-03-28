@@ -9,7 +9,7 @@ package missionlaunch;
  * @author L
  */
 public class MissionLaunch extends javax.swing.JFrame {
-
+    VisualViewPort visualViewPort = new VisualViewPort();
     /**
      * Creates new form MissionLaunch
      */
@@ -27,7 +27,7 @@ public class MissionLaunch extends javax.swing.JFrame {
     private void initComponents() {
 
         visualScroller = new javax.swing.JScrollPane();
-        visualPanel = new MissionVisual();
+        visualPanel = new MissionVisual(visualViewPort);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1200, 600));
@@ -35,6 +35,7 @@ public class MissionLaunch extends javax.swing.JFrame {
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        visualScroller.setViewport(visualViewPort);
         visualScroller.setMinimumSize(new java.awt.Dimension(1190, 560));
         visualScroller.setPreferredSize(new java.awt.Dimension(1000, 560));
 
