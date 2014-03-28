@@ -1,0 +1,25 @@
+Julian Date - Julian Date (JD) is the system of time measurement for scientific use by the astronomy community. It is the interval of time in days and fractions of a day since 4713 BC January-1 Greenwich noon. The Julian day begins at Greenwich mean noon, that is at 12:00 Universal Time (UT).
+
+To convert from Gregorian calendar date to Julian Date:
+
+Y = Year
+M = Month
+D = Day
+
+A = INT( Y / 100 ) 
+B = 2 – A + INT( A / 4 )
+
+JD = INT(365.25 × Y) + INT(30.6001 × (M + 1)) + D + 1720994.5 + B
+
+EXAMPLE
+
+Calculate the JD corresponding to 1976-July-20, 12:00 UT.
+
+Y = 1976 
+M = 7 
+D = 20.5
+A = INT(1976 / 100) = 19 
+B = 2 – 19 + INT( 19 / 4 ) = –13
+JD = INT(365.25 × 1976) + INT(30.6001 × (7 + 1)) + 20.5 + 1720994.5 – 13 = 2442980.0
+
+For the sake of simplicity, we'll be calculating all dates at 0:00 UT.
