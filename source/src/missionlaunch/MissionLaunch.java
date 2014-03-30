@@ -4,6 +4,7 @@ import java.util.GregorianCalendar;
 public class MissionLaunch extends javax.swing.JFrame {
     VisualViewPort visualViewPort = new VisualViewPort();
     MissionVisual missionVisual = new MissionVisual(visualViewPort);
+    //OrbitSimulation missionVisual = new OrbitSimulation(visualViewPort);
     GregorianCalendar date = new GregorianCalendar();
     /**
      * Creates new form MissionLaunch
@@ -60,6 +61,26 @@ public class MissionLaunch extends javax.swing.JFrame {
         missionVisual.calculatePlanetPositions(d);
     }
     
+    public void updateOrbitScope(){
+        String origin = (String)originCBox.getSelectedItem();
+        String destination = (String)destinationCBox.getSelectedItem();
+        if(origin.equalsIgnoreCase("neptune") || destination.equalsIgnoreCase("neptune")){
+            missionVisual.changeScope(MissionVisual.NEPTUNE_APHELION);
+        }
+        else if(origin.equalsIgnoreCase("uranus") || destination.equalsIgnoreCase("uranus")){
+            missionVisual.changeScope(MissionVisual.URANUS_APHELION);
+        }
+        else if(origin.equalsIgnoreCase("saturn") || destination.equalsIgnoreCase("saturn")){
+            missionVisual.changeScope(MissionVisual.SATURN_APHELION);
+        }
+        else if(origin.equalsIgnoreCase("jupiter") || destination.equalsIgnoreCase("jupiter")){
+            missionVisual.changeScope(MissionVisual.JUPITER_APHELION);
+        }
+        else{
+            missionVisual.changeScope(MissionVisual.MARS_APHELION);
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -96,7 +117,6 @@ public class MissionLaunch extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1200, 600));
-        setPreferredSize(new java.awt.Dimension(1300, 600));
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -174,32 +194,42 @@ launchMonthCBox.addItemListener(new java.awt.event.ItemListener() {
     flightPathPanel.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 40, -1, 20));
 
     originCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Mercury",
-        "Venus", "Earth", "Mars" }));
-flightPathPanel.add(originCBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 40, 100, -1));
+        "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune" }));
+originCBox.addItemListener(new java.awt.event.ItemListener() {
+public void itemStateChanged(java.awt.event.ItemEvent evt) {
+    originCBoxItemStateChanged(evt);
+    }
+    });
+    flightPathPanel.add(originCBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 40, 100, -1));
 
-destinationCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Mercury",
-"Venus", "Earth", "Mars" }));
-flightPathPanel.add(destinationCBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 40, 100, -1));
+    destinationCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Mercury",
+        "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune" }));
+destinationCBox.addItemListener(new java.awt.event.ItemListener() {
+public void itemStateChanged(java.awt.event.ItemEvent evt) {
+    destinationCBoxItemStateChanged(evt);
+    }
+    });
+    flightPathPanel.add(destinationCBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 40, 100, -1));
 
-getContentPane().add(flightPathPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 20, 390, 90));
+    getContentPane().add(flightPathPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 20, 390, 90));
 
-launchButton.setText("Launch");
-getContentPane().add(launchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(1220, 340, -1, -1));
+    launchButton.setText("Launch");
+    getContentPane().add(launchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(1220, 340, -1, -1));
 
-arrivalDateLabel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Arrival Date", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12))); // NOI18N
-arrivalDateLabel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+    arrivalDateLabel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Arrival Date", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12))); // NOI18N
+    arrivalDateLabel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-arrivalMonthLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-arrivalMonthLabel.setText("Month");
-arrivalDateLabel.add(arrivalMonthLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, -1, 20));
+    arrivalMonthLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+    arrivalMonthLabel.setText("Month");
+    arrivalDateLabel.add(arrivalMonthLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, -1, 20));
 
-arrivalMonthCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "January",
-    "February","March","April","May","June","July","August","September","October",
-    "November","December" }));
-    arrivalMonthCBox.addItemListener(new java.awt.event.ItemListener() {
-        public void itemStateChanged(java.awt.event.ItemEvent evt) {
-            arrivalMonthCBoxItemStateChanged(evt);
-        }
+    arrivalMonthCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "January",
+        "February","March","April","May","June","July","August","September","October",
+        "November","December" }));
+arrivalMonthCBox.addItemListener(new java.awt.event.ItemListener() {
+public void itemStateChanged(java.awt.event.ItemEvent evt) {
+    arrivalMonthCBoxItemStateChanged(evt);
+    }
     });
     arrivalDateLabel.add(arrivalMonthCBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 40, -1, -1));
 
@@ -266,6 +296,14 @@ arrivalMonthCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "J
         String y = (String)arrivalYearCBox.getSelectedItem();
         updateArrivalDays(m,Integer.parseInt(y));
     }//GEN-LAST:event_arrivalYearCBoxItemStateChanged
+
+    private void originCBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_originCBoxItemStateChanged
+        updateOrbitScope();
+    }//GEN-LAST:event_originCBoxItemStateChanged
+
+    private void destinationCBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_destinationCBoxItemStateChanged
+        updateOrbitScope();
+    }//GEN-LAST:event_destinationCBoxItemStateChanged
 
     /**
      * @param args the command line arguments
