@@ -1,0 +1,21 @@
+dc = (te * pg) + ev
+-----------------------------------
+dc - deceleration (km/hr)
+te - time from entry of gravitational field (hr)
+pg - planetary gravity (km/(hr**2))
+ev - entry velocity (km/hr)
+-----------------------------------
+Deceleration needs to be such that the shuttle's velocity reaches zero before reaching the planet surface.
+-This might lead to a maximum transit speed to allow for a safe landing.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cs = fs + (t * ac)
+-----------------------------------
+cs - current speed (km/hr)
+fs - former speed (km/hr)
+t - time (hr)
+ac - acceleration (km/(hr**2))
+-----------------------------------
+While fs <= sl
+	sl - speed limit
+	-determined by how much time will be needed to stop the ship in time for landing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

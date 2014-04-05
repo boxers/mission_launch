@@ -22,4 +22,4 @@ A = INT(1976 / 100) = 19
 B = 2 – 19 + INT( 19 / 4 ) = –13
 JD = INT(365.25 × 1976) + INT(30.6001 × (7 + 1)) + 20.5 + 1720994.5 – 13 = 2442980.0
 
-For the sake of simplicity, we'll be calculating all dates at 0:00 UT.
+For the sake of simplicity, we'll be calculating all dates at starting time 0:00 UT.
