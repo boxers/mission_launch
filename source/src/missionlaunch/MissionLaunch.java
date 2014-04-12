@@ -1,17 +1,94 @@
 package missionlaunch;
+import com.mhuss.AstroLib.Planets;
 import java.util.GregorianCalendar;
 
 public class MissionLaunch extends javax.swing.JFrame {
     VisualViewPort visualViewPort = new VisualViewPort();
-    MissionVisual missionVisual = new MissionVisual(visualViewPort);
-    //OrbitSimulation missionVisual = new OrbitSimulation(visualViewPort);
+    Visuals missionVisual = new MissionVisual(visualViewPort);
+    //Visuals missionVisual = new OrbitSimulation(visualViewPort);
     GregorianCalendar date = new GregorianCalendar();
-    /**
-     * Creates new form MissionLaunch
-     */
+    
+    ABody sun = new ABody(Planets.SUN, 1391000, 0, 0, 0);
+    ABody mercury = new ABody(Planets.MERCURY, 4879, 0, 4.3, 47.9);
+    ABody venus = new ABody(Planets.VENUS, 12104, 0, 10.4, 35.0);
+    ABody earth = new ABody(Planets.EARTH, 12756, 0, 11.2, 29.8);
+    ABody mars = new ABody(Planets.MARS, 6792, 0, 5.0, 24.1);
+    ABody jupiter = new ABody(Planets.JUPITER, 142984, 0, 59.5, 13.1);
+    ABody saturn = new ABody(Planets.SATURN, 120536, 0, 35.5, 9.7);
+    ABody uranus = new ABody(Planets.URANUS, 51118, 0, 21.3, 6.8);
+    ABody neptune = new ABody(Planets.NEPTUNE, 49528, 0, 23.5, 5.4);
+    
+    Thread animator;
+    
     public MissionLaunch() {
         initComponents();
         postInit();
+    }
+    
+    private void animateLaunch(final Shuttle shuttle){
+        launchButton.setEnabled(false);
+        launchDayCBox.setEnabled(false);
+        launchMonthCBox.setEnabled(false);
+        launchYearCBox.setEnabled(false);
+        originCBox.setEnabled(false);
+        destinationCBox.setEnabled(false);
+        animator = new Thread(){
+            public void run(){
+                shuttle.calculateTravelPath();
+                launchButton.setEnabled(true);
+                launchDayCBox.setEnabled(true);
+                launchMonthCBox.setEnabled(true);
+                launchYearCBox.setEnabled(true);
+                originCBox.setEnabled(true);
+                destinationCBox.setEnabled(true);
+            }
+        };
+        animator.start();
+    }
+    
+    private ABody getABody(String body){
+        if(body.equalsIgnoreCase("mercury")){
+            return mercury;
+        }
+        else if(body.equalsIgnoreCase("venus")){
+            return venus;
+        }
+        else if(body.equalsIgnoreCase("earth")){
+            return earth;
+        }
+        else if(body.equalsIgnoreCase("mars")){
+            return mars;
+        }
+        else if(body.equalsIgnoreCase("jupiter")){
+            return jupiter;
+        }
+        else if(body.equalsIgnoreCase("saturn")){
+            return saturn;
+        }
+        else if(body.equalsIgnoreCase("uranus")){
+            return uranus;
+        }
+        else if(body.equalsIgnoreCase("neptune")){
+            return neptune;
+        }
+        else{
+            return sun;
+        }  
+    }
+    
+    private void launchShuttle(){
+        missionVisual.resetDrawingBoard();
+        String origin = (String)originCBox.getSelectedItem();
+        String destination = (String)destinationCBox.getSelectedItem();
+        ABody src = getABody(origin);
+        ABody dest = getABody(destination);
+        int m = launchMonthCBox.getSelectedIndex();
+        String y = (String)launchYearCBox.getSelectedItem();
+        String d = (String)launchDayCBox.getSelectedItem();
+        GregorianCalendar launchDate = new GregorianCalendar(Integer.parseInt(y),m,Integer.parseInt(d));
+        int velocity = Integer.parseInt(velocityField.getText());
+        Shuttle shuttle = new Shuttle(src,dest,launchDate,missionVisual, velocity);
+        animateLaunch(shuttle);
     }
     
     private void postInit(){
@@ -40,6 +117,7 @@ public class MissionLaunch extends javax.swing.JFrame {
     }
     
     public void updatePlanetPositions(GregorianCalendar d){
+        missionVisual.resetDrawingBoard();
         missionVisual.calculatePlanetPositions(d);
     }
     
@@ -61,6 +139,11 @@ public class MissionLaunch extends javax.swing.JFrame {
         else{
             missionVisual.changeScope(MissionVisual.MARS_APHELION);
         }
+        int m = launchMonthCBox.getSelectedIndex();
+        String y = (String)launchYearCBox.getSelectedItem();
+        String d = (String)launchDayCBox.getSelectedItem();
+        GregorianCalendar launchDate = new GregorianCalendar(Integer.parseInt(y),m,Integer.parseInt(d));
+        updatePlanetPositions(launchDate);
     }
     
     /**
@@ -73,7 +156,7 @@ public class MissionLaunch extends javax.swing.JFrame {
     private void initComponents() {
 
         visualScroller = new javax.swing.JScrollPane();
-        visualPanel = missionVisual;
+        visualPanel = (javax.swing.JPanel)missionVisual;
         launchDatePanel = new javax.swing.JPanel();
         launchDayLabel = new javax.swing.JLabel();
         launchDayCBox = new javax.swing.JComboBox();
@@ -89,6 +172,9 @@ public class MissionLaunch extends javax.swing.JFrame {
         launchButton = new javax.swing.JButton();
         resultsScroller = new javax.swing.JScrollPane();
         resultsTextArea = new javax.swing.JTextArea();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        velocityField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1200, 600));
@@ -189,7 +275,12 @@ public void itemStateChanged(java.awt.event.ItemEvent evt) {
     getContentPane().add(flightPathPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 20, 390, 90));
 
     launchButton.setText("Launch");
-    getContentPane().add(launchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(1220, 340, -1, -1));
+    launchButton.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            launchButtonActionPerformed(evt);
+        }
+    });
+    getContentPane().add(launchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(1220, 320, -1, -1));
 
     resultsTextArea.setEditable(false);
     resultsTextArea.setColumns(20);
@@ -198,7 +289,17 @@ public void itemStateChanged(java.awt.event.ItemEvent evt) {
     resultsTextArea.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Results", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12))); // NOI18N
     resultsScroller.setViewportView(resultsTextArea);
 
-    getContentPane().add(resultsScroller, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 380, 380, 180));
+    getContentPane().add(resultsScroller, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 360, 380, 200));
+
+    jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Velocity", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12))); // NOI18N
+    jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+    jLabel3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+    jLabel3.setText("Max Velocity");
+    jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 30, 90, 30));
+    jPanel1.add(velocityField, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 30, 120, 30));
+
+    getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 230, 390, 80));
 
     pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -229,6 +330,10 @@ public void itemStateChanged(java.awt.event.ItemEvent evt) {
     private void destinationCBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_destinationCBoxItemStateChanged
         updateOrbitScope();
     }//GEN-LAST:event_destinationCBoxItemStateChanged
+
+    private void launchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_launchButtonActionPerformed
+        launchShuttle();
+    }//GEN-LAST:event_launchButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -269,6 +374,8 @@ public void itemStateChanged(java.awt.event.ItemEvent evt) {
     private javax.swing.JPanel flightPathPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JButton launchButton;
     private javax.swing.JPanel launchDatePanel;
     private javax.swing.JComboBox launchDayCBox;
@@ -280,6 +387,7 @@ public void itemStateChanged(java.awt.event.ItemEvent evt) {
     private javax.swing.JLabel originLabel;
     private javax.swing.JScrollPane resultsScroller;
     private javax.swing.JTextArea resultsTextArea;
+    private javax.swing.JTextField velocityField;
     private javax.swing.JPanel visualPanel;
     private javax.swing.JScrollPane visualScroller;
     // End of variables declaration//GEN-END:variables

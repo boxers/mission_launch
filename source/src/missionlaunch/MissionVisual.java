@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.GregorianCalendar;
 import javax.imageio.ImageIO;
 
-public class MissionVisual extends JPanel{
+public class MissionVisual extends JPanel implements Visuals{
     
     private final static int P_HEIGHT = 1024;
     private final static int P_WIDTH = 1280;
@@ -26,23 +26,26 @@ public class MissionVisual extends JPanel{
     double centerX = P_WIDTH/2.0;
     double centerY = P_HEIGHT/2.0;
     
+    BufferedImage board;
     BufferedImage[] orbits = new BufferedImage[5];
     
-    ABody sun = new ABody(Planets.SUN, 1391000, 0);
-    ABody mercury = new ABody(Planets.MERCURY, 4879, 0);
-    ABody venus = new ABody(Planets.VENUS, 12104, 0);
-    ABody earth = new ABody(Planets.EARTH, 12756, 0);
-    ABody mars = new ABody(Planets.MARS, 6792, 0);
-    ABody jupiter = new ABody(Planets.JUPITER, 142984, 0);
-    ABody saturn = new ABody(Planets.SATURN, 120536, 0);
-    ABody uranus = new ABody(Planets.URANUS, 51118, 0);
-    ABody neptune = new ABody(Planets.NEPTUNE, 49528, 0);
+    Graphics2D g2d;
+    
+    ABody sun = ABody.SUN;
+    ABody mercury = ABody.MERCURY;
+    ABody venus = ABody.VENUS;
+    ABody earth = ABody.EARTH;
+    ABody mars = ABody.MARS;
+    ABody jupiter = ABody.JUPITER;
+    ABody saturn = ABody.SATURN;
+    ABody uranus = ABody.URANUS;
+    ABody neptune = ABody.NEPTUNE;
     
     Ellipse2D.Double sunShape = new Ellipse2D.Double(600,472,80,80);
-    Ellipse2D.Double earthShape = new Ellipse2D.Double(-500,-500,50,50);
+    Ellipse2D.Double earthShape = new Ellipse2D.Double(-500,-500,40,40);
     Ellipse2D.Double mercuryShape = new Ellipse2D.Double(-500,-500,20,20);
-    Ellipse2D.Double venusShape = new Ellipse2D.Double(-500,-500,50,50);
-    Ellipse2D.Double marsShape = new Ellipse2D.Double(-500,-500,40,40);
+    Ellipse2D.Double venusShape = new Ellipse2D.Double(-500,-500,40,40);
+    Ellipse2D.Double marsShape = new Ellipse2D.Double(-500,-500,30,30);
     Ellipse2D.Double jupiterShape = new Ellipse2D.Double(-500,-500,40,40);
     Ellipse2D.Double saturnShape = new Ellipse2D.Double(-500,-500,40,40);
     Ellipse2D.Double uranusShape = new Ellipse2D.Double(-500,-500,40,40);
@@ -54,6 +57,9 @@ public class MissionVisual extends JPanel{
     VisualViewPort visualViewPort;
     
     public MissionVisual(JViewport jvp){
+        board = new BufferedImage(P_WIDTH, P_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        g2d = board.createGraphics();
+        g2d.setColor(Color.RED);
         Dimension size = new Dimension(P_WIDTH, P_HEIGHT);
         setBackground(Color.BLACK);
         setForeground(Color.RED);
@@ -71,7 +77,7 @@ public class MissionVisual extends JPanel{
             visualDate = date;
         }
         //int second = date.get(GregorianCalendar.SECOND);
-        //int minute = date.get(GregorianCalendar.MINUTE);
+        int minute = date.get(GregorianCalendar.MINUTE);
         int hour = date.get(GregorianCalendar.HOUR_OF_DAY);
         int day = date.get(GregorianCalendar.DAY_OF_MONTH);
         int year = date.get(GregorianCalendar.YEAR);
@@ -119,7 +125,11 @@ public class MissionVisual extends JPanel{
                 neptuneShape.getWidth(), neptuneShape.getHeight());
         
         repaint();
-        visualViewPort.setDate(year+"-"+month+"-"+day+" "+hour+":00 UT");
+        String minutes = minute+"";
+        if(minute < 10){
+            minutes = "0"+minutes;
+        }
+        visualViewPort.setDate(year+"-"+month+"-"+day+" "+hour+":"+minutes+" UT");
     }
     
     public void changeScope(double aphel){   
@@ -201,6 +211,44 @@ public class MissionVisual extends JPanel{
         catch (IOException e) {}
     }
     
+    public void plot(TimeStep t){
+        Location start = t.getStartLocation();
+        Location end = t.getEndLocation();
+        double stX = start.getX();
+        double stY = start.getY();
+        double endX = end.getX();
+        double endY = end.getY();
+        double x1 = stX/px+centerX;
+        double y1 = -stY/px+centerY;
+        double x2 = endX/px+centerX;
+        double y2 = -endY/px+centerY;
+        g2d.drawLine((int)x1, (int)y1, (int)x2, (int)y2);
+    }
+    
+    /*
+    public void plot(TimeStep t){
+        Location start = t.getStartLocation();
+        Location end = t.getEndLocation();
+        double stDist = start.getDistance();
+        double stLon = start.getLongitude();
+        double endDist = end.getDistance();
+        double endLon = end.getLongitude();
+        stDist = stDist/px;
+        endDist = endDist/px;
+        double x1 = stDist*Math.cos(stLon)+centerX;
+        double y1 = -stDist*Math.sin(stLon)+centerY;
+        double x2 = endDist*Math.cos(endLon)+centerX;
+        double y2 = -endDist*Math.sin(endLon)+centerY;
+        g2d.drawLine((int)x1, (int)y1, (int)x2, (int)y2);
+    }
+    */
+    
+    public void resetDrawingBoard(){
+        board = new BufferedImage(P_WIDTH, P_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        g2d = board.createGraphics();
+        g2d.setColor(Color.RED);
+    }
+    
     @Override
     public void paintComponent(Graphics g){
         Graphics2D g2 = (Graphics2D)g;
@@ -225,5 +273,6 @@ public class MissionVisual extends JPanel{
         g2.fill(uranusShape);
         g2.setColor(Color.BLUE);
         g2.fill(neptuneShape);
+        g2.drawImage(board,0,0,null);
     }
 }

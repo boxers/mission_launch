@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.GregorianCalendar;
 import javax.imageio.ImageIO;
 
-public class OrbitSimulation extends JPanel{
+public class OrbitSimulation extends JPanel implements Visuals{
     
     private final static int P_HEIGHT = 1024;
     private final static int P_WIDTH = 1280;
@@ -30,15 +30,15 @@ public class OrbitSimulation extends JPanel{
     BufferedImage[] orbits = new BufferedImage[5];
     Graphics2D g2d;
     
-    ABody sun = new ABody(Planets.SUN, 1391000, 0);
-    ABody mercury = new ABody(Planets.MERCURY, 4879, 0);
-    ABody venus = new ABody(Planets.VENUS, 12104, 0);
-    ABody earth = new ABody(Planets.EARTH, 12756, 0);
-    ABody mars = new ABody(Planets.MARS, 6792, 0);
-    ABody jupiter = new ABody(Planets.JUPITER, 142984, 0);
-    ABody saturn = new ABody(Planets.SATURN, 120536, 0);
-    ABody uranus = new ABody(Planets.URANUS, 51118, 0);
-    ABody neptune = new ABody(Planets.NEPTUNE, 49528, 0);
+    ABody sun = ABody.SUN;
+    ABody mercury = ABody.MERCURY;
+    ABody venus = ABody.VENUS;
+    ABody earth = ABody.EARTH;
+    ABody mars = ABody.MARS;
+    ABody jupiter = ABody.JUPITER;
+    ABody saturn = ABody.SATURN;
+    ABody uranus = ABody.URANUS;
+    ABody neptune = ABody.NEPTUNE;
     
     Ellipse2D.Double sunShape = new Ellipse2D.Double(600,472,80,80);
     Ellipse2D.Double earthShape = new Ellipse2D.Double(-500,-500,40,40);
@@ -227,6 +227,10 @@ public class OrbitSimulation extends JPanel{
         }
         catch (IOException e) {}
     }
+    
+    public void plot(TimeStep t){}
+    
+    public void resetDrawingBoard(){}
     
     @Override
     public void paintComponent(Graphics g){
