@@ -1,0 +1,22 @@
+t - time interval
+V(t) - direction vector at interval t
+F(t) - gravitational force at time t
+g[p] - gravity of the planet p
+m[p] - mass of the planet p
+u[p] - 
+d(t) - distance between planet and shuttle at time t 
+G - gravitational pull on shuttle (magnitude = F, angle = line from shuttle to planet center)
+
+F(t) = -g[p](m[p]/(d(t)^2))
+	F(t) to be calculated when d(t) for planet p <= the radius of its gravitational field
+V(t+1) = V(t) + Gt
+-----------------------------------------------------------------------------------------------------------------------------------------------
+When passing a planet, the movememt vector of the shuttle is affected by the gravitational pull of the planet. The pull will shift the shuttle's trajectory slightly towards the planet and (depending on the direction the shuttle approaches from) speed up or slow down the shuttle.
+
+As far as plotting whether to exit the gravitational pull early (as in before the shuttle's momentum would naturally take it out of the planet's gravitational field) if the directional algorithm's result angle would be overshot by the natural exit angle by a given amount (ex. 1) the shuttle will apply acceleration in the direction of the planet to lessen the effect of the planet's gravity on its trajectory. This correction would be applied until the resulting exit angle would not overshoot the target angle. 
+-----------------------------------------------------------------------------------------------------------------------------------------------
+ex. 1:	shuttle enters gravitational field at angle 64 degrees
+	shuttle exits gravitational field at angle 135 degrees
+	at exit point directional algorithm would need it traveling towards angle 100 degrees
+-----------------------------------------------------------------------------------------------------------------------------------------------
+http://saturn.jpl.nasa.gov/mission/missiongravityassistprimer/

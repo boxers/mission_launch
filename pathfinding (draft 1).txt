@@ -1,0 +1,43 @@
+i - time interval
+-t - length of interval
+a - engine acceleration
+
+t[i] - time to reach the target at its position at time interval i
+
+Ve[i] - shuttle velocity at time interval i
+-Ve[i+1] - shuttle velocity at the next interval
+
+V[h] - heading vector
+-A[h] - angle of V[h]
+
+V[tc] - vector of the target (at time of calculation) (in relation to shuttle)
+-D[tc] - magnitude of V[tc]
+-A[tc] - angle of V[tc]
+
+V[tf] - vector of the target (after travel time) (in relation to shuttle)
+-A[tf] - angle of V[tf]
+
+V[sp] - vector of the shuttle's position (at time of calculation)
+-D[sp] - magnitude of V[sp]
+-A[sp] - angle of V[sp]
+
+V[sm] - vector of the shuttle's movement
+-D[sm] - magnitude of V[sm]
+-A[sm] - angle of V[sm]
+~~~~~~~~~~
+Base Equations
+	time * velocity = distance
+	time * acceleration = velocity
+
+Ve[i+1] = Ve[i] + (a * t)
+
+t[i] = sum(t) while i++ sum(t * Ve[i]) <= D[tc]
+	Use t[i] to find target planet's location at that time (represented by V[tf])
+
+V[h] = V[tf] - V[s]
+
+~~~~~~~~~~
+At each step, the time that would be needed to make a straight path to the target planet's current location is calculated.
+	Then, the target's location after that is calculated.
+	The resulting position is used as the heading for the shuttle's acceleration.
+~~~~~~~~~~
