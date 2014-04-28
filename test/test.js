@@ -340,10 +340,30 @@ function setWalls() {
 		walls[3] = null;
 	}
 
-	walls[0] = createBox(world, stage[2] / 2, - wall_thickness, stage[2], wall_thickness);
+	walls[0] = createBox(world, stage[2] / 2, -200, stage[2], wall_thickness-195);
 	walls[1] = createBox(world, 0, stage[3] + 5, stage[2], wall_thickness-195);
-	walls[2] = createBox(world, - wall_thickness, stage[3] / 2, wall_thickness, stage[3]);
-	walls[3] = createBox(world, stage[2]+wall_thickness, 0, wall_thickness, stage[3]);
+	walls[2] = createBox(world, - wall_thickness, stage[3] / 2, wall_thickness, stage[3]+200);
+	walls[3] = createBox(world, stage[2]+wall_thickness, 0, wall_thickness, stage[3]+200);
 
 	wallsSetted = true;
+}
+
+// BROWSER DIMENSIONS
+
+function getBrowserDimensions() {
+
+	var changed = false;
+
+	if (stage[0] != window.screenX) {
+		delta[0] = (window.screenX - stage[0]) * 50;
+		stage[0] = window.screenX;
+		changed = true;
+	}
+
+	if (stage[1] != window.screenY) {
+		delta[1] = (window.screenY - stage[1]) * 50;
+		stage[1] = window.screenY;
+		changed = true;
+	}
+	return changed;
 }
