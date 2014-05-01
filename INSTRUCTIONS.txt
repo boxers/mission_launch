@@ -21,16 +21,3 @@ To Run:
 
 1. Go to the directory source/classes/
 2. Enter the command: java -classpath .;AbsoluteLayout.jar missionlaunch.MissionLaunch
-
-
-To view Simulation of Orbits:
-
-change line 6 of MissionLaunch.java 
-
-from:
-	MissionVisual missionVisual = new MissionVisual(visualViewPort);
-
-to:
-	OrbitSimulation missionVisual = new OrbitSimulation(visualViewPort);
-
-Then recompile and run. Change it back and recompile to use the main program.

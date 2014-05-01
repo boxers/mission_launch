@@ -1,5 +1,5 @@
 package missionlaunch;
-import com.mhuss.AstroLib.Planets;
+import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 
 public class MissionLaunch extends javax.swing.JFrame {
@@ -8,15 +8,17 @@ public class MissionLaunch extends javax.swing.JFrame {
     //Visuals missionVisual = new OrbitSimulation(visualViewPort);
     GregorianCalendar date = new GregorianCalendar();
     
-    ABody sun = new ABody(Planets.SUN, 1391000, 0, 0, 0);
-    ABody mercury = new ABody(Planets.MERCURY, 4879, 0, 4.3, 47.9);
-    ABody venus = new ABody(Planets.VENUS, 12104, 0, 10.4, 35.0);
-    ABody earth = new ABody(Planets.EARTH, 12756, 0, 11.2, 29.8);
-    ABody mars = new ABody(Planets.MARS, 6792, 0, 5.0, 24.1);
-    ABody jupiter = new ABody(Planets.JUPITER, 142984, 0, 59.5, 13.1);
-    ABody saturn = new ABody(Planets.SATURN, 120536, 0, 35.5, 9.7);
-    ABody uranus = new ABody(Planets.URANUS, 51118, 0, 21.3, 6.8);
-    ABody neptune = new ABody(Planets.NEPTUNE, 49528, 0, 23.5, 5.4);
+    ABody sun = ABody.SUN.copy();
+    ABody mercury = ABody.MERCURY.copy();
+    ABody venus = ABody.VENUS.copy();
+    ABody earth = ABody.EARTH.copy();
+    ABody mars = ABody.MARS.copy();
+    ABody jupiter = ABody.JUPITER.copy();
+    ABody saturn = ABody.SATURN.copy();
+    ABody uranus = ABody.URANUS.copy();
+    ABody neptune = ABody.NEPTUNE.copy();
+    
+    Shuttle shuttle;
     
     Thread animator;
     
@@ -26,6 +28,7 @@ public class MissionLaunch extends javax.swing.JFrame {
     }
     
     private void animateLaunch(final Shuttle shuttle){
+        resultsTextArea.setText("");
         launchButton.setEnabled(false);
         launchDayCBox.setEnabled(false);
         launchMonthCBox.setEnabled(false);
@@ -35,6 +38,17 @@ public class MissionLaunch extends javax.swing.JFrame {
         animator = new Thread(){
             public void run(){
                 shuttle.calculateTravelPath();
+                if(shuttle.isCollision()){
+                    resultsTextArea.append("Mission failed.\n");
+                    resultsTextArea.append("Shuttle collided with "+shuttle.getCollision());
+                }
+                else{
+                    if(!shuttle.isStopped()){
+                        resultsTextArea.append("Mission success!\n");
+                        //SimpleDateFormat sdf = new SimpleDateFormat("MMMMM d, yyyy. h a");
+                        //resultsTextArea.append("Shuttle arrived on "+sdf.format(shuttle.getDate().getTime()));
+                    }
+                }
                 launchButton.setEnabled(true);
                 launchDayCBox.setEnabled(true);
                 launchMonthCBox.setEnabled(true);
@@ -87,7 +101,7 @@ public class MissionLaunch extends javax.swing.JFrame {
         String d = (String)launchDayCBox.getSelectedItem();
         GregorianCalendar launchDate = new GregorianCalendar(Integer.parseInt(y),m,Integer.parseInt(d));
         int velocity = Integer.parseInt(velocityField.getText());
-        Shuttle shuttle = new Shuttle(src,dest,launchDate,missionVisual, velocity);
+        shuttle = new Shuttle(src,dest,launchDate,missionVisual, velocity);
         animateLaunch(shuttle);
     }
     
@@ -175,15 +189,16 @@ public class MissionLaunch extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         velocityField = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(1200, 600));
+        setMinimumSize(new java.awt.Dimension(1280, 740));
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         visualScroller.setViewport(visualViewPort);
-        visualScroller.setMinimumSize(new java.awt.Dimension(900, 560));
-        visualScroller.setPreferredSize(new java.awt.Dimension(900, 560));
+        visualScroller.setMinimumSize(new java.awt.Dimension(900, 710));
+        visualScroller.setPreferredSize(new java.awt.Dimension(900, 710));
 
         javax.swing.GroupLayout visualPanelLayout = new javax.swing.GroupLayout(visualPanel);
         visualPanel.setLayout(visualPanelLayout);
@@ -235,24 +250,24 @@ launchMonthCBox.addItemListener(new java.awt.event.ItemListener() {
             launchYearCBoxItemStateChanged(evt);
         }
     });
-    launchDatePanel.add(launchYearCBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 40, -1, -1));
+    launchDatePanel.add(launchYearCBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 40, -1, -1));
 
     jLabel1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
     jLabel1.setText("Year");
-    launchDatePanel.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 40, -1, 20));
+    launchDatePanel.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 40, -1, 20));
 
-    getContentPane().add(launchDatePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 130, 390, 90));
+    getContentPane().add(launchDatePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 130, 370, 90));
 
     flightPathPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Flight Path", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12))); // NOI18N
     flightPathPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
     originLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
     originLabel.setText("Origin");
-    flightPathPanel.add(originLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 40, -1, 20));
+    flightPathPanel.add(originLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, -1, 20));
 
     jLabel2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
     jLabel2.setText("Destination");
-    flightPathPanel.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 40, -1, 20));
+    flightPathPanel.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 40, -1, 20));
 
     originCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Mercury",
         "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune" }));
@@ -261,18 +276,18 @@ public void itemStateChanged(java.awt.event.ItemEvent evt) {
     originCBoxItemStateChanged(evt);
     }
     });
-    flightPathPanel.add(originCBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 40, 100, -1));
+    flightPathPanel.add(originCBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 40, 100, -1));
 
     destinationCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Mercury",
-        "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune" }));
+        "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Sun" }));
 destinationCBox.addItemListener(new java.awt.event.ItemListener() {
 public void itemStateChanged(java.awt.event.ItemEvent evt) {
     destinationCBoxItemStateChanged(evt);
     }
     });
-    flightPathPanel.add(destinationCBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 40, 100, -1));
+    flightPathPanel.add(destinationCBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 40, 100, -1));
 
-    getContentPane().add(flightPathPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 20, 390, 90));
+    getContentPane().add(flightPathPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 20, 370, 90));
 
     launchButton.setText("Launch");
     launchButton.addActionListener(new java.awt.event.ActionListener() {
@@ -280,7 +295,7 @@ public void itemStateChanged(java.awt.event.ItemEvent evt) {
             launchButtonActionPerformed(evt);
         }
     });
-    getContentPane().add(launchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(1220, 320, -1, -1));
+    getContentPane().add(launchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 320, -1, -1));
 
     resultsTextArea.setEditable(false);
     resultsTextArea.setColumns(20);
@@ -289,17 +304,25 @@ public void itemStateChanged(java.awt.event.ItemEvent evt) {
     resultsTextArea.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Results", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12))); // NOI18N
     resultsScroller.setViewportView(resultsTextArea);
 
-    getContentPane().add(resultsScroller, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 360, 380, 200));
+    getContentPane().add(resultsScroller, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 360, 360, 350));
 
     jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Velocity", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12))); // NOI18N
     jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-    jLabel3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-    jLabel3.setText("Max Velocity");
-    jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 30, 90, 30));
-    jPanel1.add(velocityField, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 30, 120, 30));
+    jLabel3.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+    jLabel3.setText("Starting Velocity");
+    jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 30, 90, 30));
+    jPanel1.add(velocityField, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 30, 120, 30));
 
-    getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 230, 390, 80));
+    getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 230, 370, 80));
+
+    jButton1.setText("Stop");
+    jButton1.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            jButton1ActionPerformed(evt);
+        }
+    });
+    getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1170, 320, 70, -1));
 
     pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -334,6 +357,13 @@ public void itemStateChanged(java.awt.event.ItemEvent evt) {
     private void launchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_launchButtonActionPerformed
         launchShuttle();
     }//GEN-LAST:event_launchButtonActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if(shuttle != null){
+            shuttle.stopShuttle();
+            shuttle = null;
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -372,6 +402,7 @@ public void itemStateChanged(java.awt.event.ItemEvent evt) {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox destinationCBox;
     private javax.swing.JPanel flightPathPanel;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

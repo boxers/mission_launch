@@ -3,6 +3,7 @@ import com.mhuss.AstroLib.*;
 import javax.swing.*;
 import java.awt.geom.*;
 import java.awt.*;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -25,8 +26,12 @@ public class MissionVisual extends JPanel implements Visuals{
     double px = aphelion/(P_HEIGHT/2.0);
     double centerX = P_WIDTH/2.0;
     double centerY = P_HEIGHT/2.0;
+    double shuttleX = 0.0;
+    double shuttleY = 0.0;
     
     BufferedImage board;
+    BufferedImage shuttle;
+    BufferedImage animateShuttle = null;
     BufferedImage[] orbits = new BufferedImage[5];
     
     Graphics2D g2d;
@@ -207,6 +212,8 @@ public class MissionVisual extends JPanel implements Visuals{
                 BufferedImage img = ImageIO.read(new File("images/board"+i+".png"));
                 orbits[i] = img;
             }
+            BufferedImage img = ImageIO.read(new File("images/spaceshuttle.png"));
+            shuttle = img;
         }
         catch (IOException e) {}
     }
@@ -223,6 +230,24 @@ public class MissionVisual extends JPanel implements Visuals{
         double x2 = endX/px+centerX;
         double y2 = -endY/px+centerY;
         g2d.drawLine((int)x1, (int)y1, (int)x2, (int)y2);
+        GraphicsConfiguration gfx_config = GraphicsEnvironment.
+                                getLocalGraphicsEnvironment().getDefaultScreenDevice().
+                                getDefaultConfiguration();
+        BufferedImage fimg = gfx_config.createCompatibleImage(
+                                        shuttle.getWidth(),
+                                        shuttle.getHeight(),
+                                        Transparency.TRANSLUCENT);
+        Graphics2D gtemp = fimg.createGraphics();
+        AffineTransform tx = AffineTransform.getRotateInstance(
+                                -t.getAngle(), 
+                                shuttle.getWidth()/2,
+                                shuttle.getHeight()/2);
+        AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+        gtemp.drawImage(op.filter(shuttle, null), 0, 0, null);
+        gtemp.dispose();
+        shuttleX = x2-shuttle.getWidth()/2;
+        shuttleY = y2-shuttle.getHeight()/2;
+        animateShuttle = fimg;
     }
     
     /*
@@ -245,6 +270,7 @@ public class MissionVisual extends JPanel implements Visuals{
     
     public void resetDrawingBoard(){
         board = new BufferedImage(P_WIDTH, P_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        animateShuttle = null;
         g2d = board.createGraphics();
         g2d.setColor(Color.RED);
     }
@@ -274,5 +300,7 @@ public class MissionVisual extends JPanel implements Visuals{
         g2.setColor(Color.BLUE);
         g2.fill(neptuneShape);
         g2.drawImage(board,0,0,null);
+        if(animateShuttle != null)
+            g2.drawImage(animateShuttle, (int)shuttleX, (int)shuttleY, null);
     }
 }
