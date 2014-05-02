@@ -31,3 +31,5 @@ They are in a rar file called mission_launch_jar_file.rar.
 Extract the files from it and then run the program using:
 
 java -jar MissionLaunch.jar
+
+If this does not work, then you most likely don't have the right version of Java installed on your machine.
