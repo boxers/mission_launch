@@ -21,3 +21,13 @@ To Run:
 
 1. Go to the directory source/classes/
 2. Enter the command: java -classpath .;AbsoluteLayout.jar missionlaunch.MissionLaunch
+
+If step 2 doesn't work, try:
+
+java missionlaunch.MissionLaunch
+
+If that does not work, download the jar files from the repository.
+They are in a rar file called mission_launch_jar_file.rar.
+Extract the files from it and then run the program using:
+
+java -jar MissionLaunch.jar
